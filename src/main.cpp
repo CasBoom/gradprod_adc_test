@@ -71,7 +71,7 @@ void setup() {
     set up ADC
   */
 
-  while(true){
+  while(true){ /* remove while loop after write operations are verified */
 
   // set ADCmode
   data[0] = 0b10000000; // enable refout
