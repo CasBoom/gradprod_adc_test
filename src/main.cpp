@@ -10,6 +10,7 @@
 // by chanign VOLTAGE to 0, Iin0 will be selected
 #define VOLTAGE 1
 
+// ugly way to print the binary value of a byte
 void printBinary(uint8_t value)
 {
     for (int i = 7; i >= 0; i-- )
@@ -28,19 +29,19 @@ uint8_t readWriteADCRegister(uint8_t read, uint8_t address, uint8_t data[], uint
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
   if(read){
     Serial.println("Reading...");
-    address |= address | 0b01000000;
+    address |= address | 0b01000000; // set flag to read
   } else {
     Serial.println("Writing...");
   }
     
   Serial.print("Address: ");
-  Serial.println(address & 0b00111111);
+  Serial.println(address & 0b00111111, HEX); // print address without read bit
   // toggle SS pin
   digitalWrite(SS_PIN, HIGH);
   delay(100);
   digitalWrite(SS_PIN, LOW);
 
-  // Serial.println(SPI.transfer(address), HEX); // first, write to the comms register at address 0x00 to select a register 
+  SPI.transfer(address); // write to the comms register at address 0x00 to select a register 
   for(int i=0; i<size; i++){
     temp = SPI.transfer(data[i]); // then, write data to register
     data[i] = temp;
