@@ -30,7 +30,7 @@ uint8_t resetADC(){
   digitalWrite(SS_PIN, LOW);
 
   for(uint8_t i=0; i<8; i++){
-    SPI.transfer(0xF); // then, write data to register
+    SPI.transfer(0xFF); // then, write data to register
   }
   digitalWrite(SS_PIN, HIGH);
   SPI.endTransaction(); // end SPI com
@@ -75,10 +75,9 @@ uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   // start SPI
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
   Serial.print("Reading from: 0x");
-  Serial.println(address & 0b00111111, HEX);
+  Serial.println(address, HEX);
   address = address | 0b01000000; // set flag to read
 
-    
   // toggle SS pin
   digitalWrite(SS_PIN, HIGH);
   delay(100);
@@ -115,32 +114,32 @@ void setup() {
   resetADC(); //reset device
 
   // set ADCmode
-  // data[0] = 0b10000000; // enable refout
-  // data[0] = 0b11111111; // enable refout
-  // data[1] = 0b00100000; // enable stand by mode
-  // writeADCRegister(0x01, data, 2); 
+  data[0] = 0b10000000; // enable refout
+  data[0] = 0b11111111; // enable refout
+  data[1] = 0b00100000; // enable stand by mode
+  writeADCRegister(0x01, data, 2); 
 
-  // // set interface mode
-  // data[0] = 0b00000000; // -
-  // data[1] = 0b00000001; // set resolution to 16-bit data
-  // writeADCRegister(0x02, data, 2); 
+  // set interface mode
+  data[0] = 0b00000000; // -
+  data[1] = 0b00000001; // set resolution to 16-bit data
+  writeADCRegister(0x02, data, 2); 
 
-  // // Set up channel 0
-  // if(VOLTAGE){
-  //   // enable voltage input
-  //   data[0] = 0b10000000; // enable Channel 0
-  //   data[1] = 0b00010000; // select Vin0
-  //   writeADCRegister(0x10, data, 2); 
-  // }else{
-  //   // enable current input
-  //   data[0] = 0b10000001; // enable Channel 0
-  //   data[1] = 0b11101000; // select Iin0+, Iin0-
-  //   writeADCRegister(0x10, data, 2); 
-  // }
-  // // set setup register config 0
-  // data[0] = 0b00000011; // Enable input buffers
-  // data[1] = 0b00100000; // Use internal reference
-  // writeADCRegister(0x20, data, 2); 
+  // Set up channel 0
+  if(VOLTAGE){
+    // enable voltage input
+    data[0] = 0b10000000; // enable Channel 0
+    data[1] = 0b00010000; // select Vin0
+    writeADCRegister(0x10, data, 2); 
+  }else{
+    // enable current input
+    data[0] = 0b10000001; // enable Channel 0
+    data[1] = 0b11101000; // select Iin0+, Iin0-
+    writeADCRegister(0x10, data, 2); 
+  }
+  // set setup register config 0
+  data[0] = 0b00000011; // Enable input buffers
+  data[1] = 0b00100000; // Use internal reference
+  writeADCRegister(0x20, data, 2); 
 
   readADCRegister(0x01, data, 2); 
   readADCRegister(0x02, data, 2); 
