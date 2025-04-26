@@ -30,7 +30,7 @@ uint8_t resetADC(){
   digitalWrite(SS_PIN, LOW);
 
   for(uint8_t i=0; i<8; i++){
-    SPI.transfer(0xFF); // then, write data to register
+    SPI.transfer(0xFF);
   }
   digitalWrite(SS_PIN, HIGH);
   SPI.endTransaction(); // end SPI com
@@ -84,6 +84,7 @@ uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   digitalWrite(SS_PIN, LOW);
 
   SPI.transfer(address); // write to the comms register at address 0x00 to select a register 
+  delay(50);
   for(int i=0; i<size; i++){
     data[i] = SPI.transfer(0); // then, read data from register
     Serial.print(i);
@@ -105,14 +106,20 @@ void setup() {
   Serial.begin(9600);
 
   // set up SPI
+  pinMode(SS_PIN, OUTPUT);
+  digitalWrite(SS_PIN, HIGH);
+
   SPI.begin();
   
+  Serial.println("Starting...");
+  delay(4000);
   
   /* 
     set up ADC
   */
-  resetADC(); //reset device
-
+  readADCRegister(0x07, data, 1); 
+  // resetADC(); //reset device
+  // readADCRegister(0x07, data, 1); 
   // set ADCmode
   data[0] = 0b10000000; // enable refout
   data[0] = 0b11111111; // enable refout
