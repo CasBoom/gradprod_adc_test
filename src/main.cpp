@@ -127,7 +127,6 @@ void setup() {
   readADCRegister(0x02, data, 2); 
   readADCRegister(0x10, data, 2); 
   readADCRegister(0x20, data, 2); 
-  //while(true); /* remove while loop after write operations are verified */
 }
 
 uint32_t conversionResult = 0;
@@ -142,9 +141,9 @@ void loop() {
 
   // wait for conversion to be ready
   do {
-    data[0] = 0b10000000; // clear data buffer
+    data[0] = 0b10000000; // preset data buffer
     readADCRegister(0x00, data, 1); 
-  } while (data[0] & 0b10000000); // while ready is high keep polling
+  } while (data[0] & 0b10000000); // keep polling while ready is high
   
   Serial.println("...");
   Serial.println("...");
