@@ -46,8 +46,6 @@ uint8_t writeADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   // start SPI
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
 
-  Serial.print("Writing to: 0x");
-  Serial.println(address, HEX);
   // toggle SS pin
   digitalWrite(SS_PIN, HIGH);
   delay(100);
@@ -55,10 +53,6 @@ uint8_t writeADCRegister(uint8_t address, uint8_t data[], uint8_t size){
 
   SPI.transfer(address); // write to the comms register at address 0x00 to select a register 
   for(int i=0; i<size; i++){
-    Serial.print(i);
-    Serial.print(": 0b");
-    printBinary(data[i]);
-    Serial.println(".");
     SPI.transfer(data[i]); // then, write data to register
   }
   digitalWrite(SS_PIN, HIGH); // disable SS
@@ -74,8 +68,6 @@ Function that first writes to the comm register, then reads data from the select
 uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   // start SPI
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
-  Serial.print("Reading from: 0x");
-  Serial.println(address, HEX);
   address = address | 0b01000000; // set flag to read
 
   // toggle SS pin
@@ -87,11 +79,6 @@ uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   delay(50);
   for(int i=0; i<size; i++){
     data[i] = SPI.transfer(0); // then, read data from register
-    Serial.print(i);
-    Serial.print(": 0b");
-    printBinary(data[i]);
-    Serial.println(".");
-    
   }
   digitalWrite(SS_PIN, HIGH); // disable SS
   SPI.endTransaction(); // end SPI com
@@ -110,10 +97,7 @@ void setup() {
   digitalWrite(SS_PIN, HIGH);
 
   SPI.begin();
-  
-  Serial.println("Starting...");
-  delay(4000);
-  
+
   /* 
     set up ADC
   */
