@@ -122,7 +122,6 @@ void setup() {
   // readADCRegister(0x07, data, 1); 
   // set ADCmode
   data[0] = 0b10000000; // enable refout
-  data[0] = 0b11111111; // enable refout
   data[1] = 0b00100000; // enable stand by mode
   writeADCRegister(0x01, data, 2); 
 
@@ -152,7 +151,7 @@ void setup() {
   readADCRegister(0x02, data, 2); 
   readADCRegister(0x10, data, 2); 
   readADCRegister(0x20, data, 2); 
-  while(true); /* remove while loop after write operations are verified */
+  //while(true); /* remove while loop after write operations are verified */
 }
 
 uint32_t conversionResult = 0;
@@ -171,27 +170,12 @@ void loop() {
     readADCRegister(0x00, data, 1); 
   } while (data[0] & 0b10000000); // while ready is high keep polling
   
-  readADCRegister(0x04, data, 3); // get Data
-  // Serial.println(data[0]);
-  // Serial.println(data[1]);
-  // Serial.println(data[2]);
-  conversionResult = (((uint32_t)data[0]) << 16) + (data[1] << 8) + + (data[0] << 0);
-
-  // print result
-  Serial.print("Raw conversion result: ");
-  Serial.println(conversionResult);
-
-  Serial.print("Result: ");
-  if(VOLTAGE){
-    calcVolt = (10*conversionResult/1048576); // multiply by 10 Voltage range, divide by amount of bits
-    Serial.print(calcVolt);
-    Serial.println("V ");
-  } else {
-    calcVolt = (24*conversionResult/1048576); // multiply by 24 mA range, divide by amount of bits
-    Serial.print(calcCur);
-    Serial.println("mA ");
-  }
-
-  // delay for a bit
-  delay(1000);
+  Serial.println("...");
+  Serial.println("...");
+  Serial.println("...");
+  readADCRegister(0x04, data, 2); // get Data
+  uint16_t readout = (data[0]<<8)+data[1];
+  Serial.print("readout: ");
+  Serial.println(readout);
+  delay(2000);
 }
