@@ -28,6 +28,7 @@ uint8_t resetADC(){
   SPI.endTransaction(); // end SPI com
   Serial.println("Device reset.");
   delay(500);
+  return 0;
 }
 
 /*
