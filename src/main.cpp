@@ -1,28 +1,19 @@
+/// \file
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
 
+ //! Slave select pin
 #define SS_PIN 10
-#define SPI_FREQ 100000
 
-// continously checks both 1 voltage channel or current channel
-// by changing VOLTAGE to 1, a Vin0 will be selected
-// by chanign VOLTAGE to 0, Iin0 will be selected
-#define VOLTAGE 1
+//! Defines the SPI frequency
+#define SPI_FREQ 100000 
 
-// ugly way to print the binary value of a byte
-void printBinary(uint8_t value)
-{
-    for (int i = 7; i >= 0; i-- )
-    {
-        Serial.print(value>>i & 0b00000001);
-    }
-}
+//! If 1, the ADC will sample Vin0. If 0, the ADC will sample Iin0.
+#define VOLTAGE 1 
 
-/*
-@brief
-Function that will do a software reset for the ADC
-*/
+
+//! Function that will perform a software reset on the ADC. Always returns 0.
 uint8_t resetADC(){
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
   digitalWrite(SS_PIN, HIGH);
@@ -36,18 +27,14 @@ uint8_t resetADC(){
   SPI.endTransaction(); // end SPI com
   Serial.println("Device reset.");
   delay(500);
+  return 0;
 }
 
-/*
-@brief
-Function that first writes to the comm register, then writes data to the selected register
-*/
+//! Function that first writes to the comm register, then writes data to the selected register. Always returns 0.
 uint8_t writeADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   // start SPI
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
 
-  Serial.print("Writing to: 0x");
-  Serial.println(address, HEX);
   // toggle SS pin
   digitalWrite(SS_PIN, HIGH);
   delay(100);
@@ -55,10 +42,6 @@ uint8_t writeADCRegister(uint8_t address, uint8_t data[], uint8_t size){
 
   SPI.transfer(address); // write to the comms register at address 0x00 to select a register 
   for(int i=0; i<size; i++){
-    Serial.print(i);
-    Serial.print(": 0b");
-    printBinary(data[i]);
-    Serial.println(".");
     SPI.transfer(data[i]); // then, write data to register
   }
   digitalWrite(SS_PIN, HIGH); // disable SS
@@ -67,15 +50,10 @@ uint8_t writeADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   return 0;
 }
 
-/*
-@brief
-Function that first writes to the comm register, then reads data from the selected register
-*/
+//! Function that first writes to the comm register, then reads data from the selected register. Always returns 0.
 uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   // start SPI
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
-  Serial.print("Reading from: 0x");
-  Serial.println(address, HEX);
   address = address | 0b01000000; // set flag to read
 
   // toggle SS pin
@@ -87,11 +65,6 @@ uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   delay(50);
   for(int i=0; i<size; i++){
     data[i] = SPI.transfer(0); // then, read data from register
-    Serial.print(i);
-    Serial.print(": 0b");
-    printBinary(data[i]);
-    Serial.println(".");
-    
   }
   digitalWrite(SS_PIN, HIGH); // disable SS
   SPI.endTransaction(); // end SPI com
@@ -99,6 +72,7 @@ uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   return 0;
 }
 
+//! Array that is passed to both the reading and writing functions
 uint8_t data[3] = {0, 0, 0}; //data buffer
 
 void setup() {
@@ -110,16 +84,12 @@ void setup() {
   digitalWrite(SS_PIN, HIGH);
 
   SPI.begin();
-  
-  Serial.println("Starting...");
-  delay(4000);
-  
+
   /* 
     set up ADC
   */
   readADCRegister(0x07, data, 1); 
-  // resetADC(); //reset device
-  // readADCRegister(0x07, data, 1); 
+ 
   // set ADCmode
   data[0] = 0b10000000; // enable refout
   data[1] = 0b00100000; // enable stand by mode
@@ -151,12 +121,7 @@ void setup() {
   readADCRegister(0x02, data, 2); 
   readADCRegister(0x10, data, 2); 
   readADCRegister(0x20, data, 2); 
-  //while(true); /* remove while loop after write operations are verified */
 }
-
-uint32_t conversionResult = 0;
-uint32_t calcVolt = 0;
-uint32_t calcCur = 0;
 
 void loop() {
   // start conversion
@@ -166,9 +131,9 @@ void loop() {
 
   // wait for conversion to be ready
   do {
-    data[0] = 0b10000000; // clear data buffer
+    data[0] = 0b10000000; // preset data buffer
     readADCRegister(0x00, data, 1); 
-  } while (data[0] & 0b10000000); // while ready is high keep polling
+  } while (data[0] & 0b10000000); // keep polling while ready is high
   
   Serial.println("...");
   Serial.println("...");

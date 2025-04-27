@@ -1,0 +1,41 @@
+\doxysection{src/main.cpp File Reference}
+\hypertarget{main_8cpp}{}\label{main_8cpp}\index{src/main.cpp@{src/main.cpp}}
+{\ttfamily \#include $<$Arduino.\+h$>$}\newline
+{\ttfamily \#include $<$Wire.\+h$>$}\newline
+{\ttfamily \#include $<$SPI.\+h$>$}\newline
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8cpp_a86fac98c9b4c98a3e50fc45440878391}\label{main_8cpp_a86fac98c9b4c98a3e50fc45440878391} 
+\#define {\bfseries SS\+\_\+\+PIN}~10
+\begin{DoxyCompactList}\small\item\em Slave select pin. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a6254a4e77c7f2f980d5f49538893d0ab}\label{main_8cpp_a6254a4e77c7f2f980d5f49538893d0ab} 
+\#define {\bfseries SPI\+\_\+\+FREQ}~100000
+\begin{DoxyCompactList}\small\item\em Defines the SPI frequency. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a95f77a4b46f8270143622e8f7de8faa7}\label{main_8cpp_a95f77a4b46f8270143622e8f7de8faa7} 
+\#define {\bfseries VOLTAGE}~1
+\begin{DoxyCompactList}\small\item\em If 1, the ADC will sample Vin0. If 0, the ADC will sample Iin0. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8cpp_acd2646b89bece6584c74282483fe0aa0}\label{main_8cpp_acd2646b89bece6584c74282483fe0aa0} 
+uint8\+\_\+t {\bfseries reset\+ADC} ()
+\begin{DoxyCompactList}\small\item\em Function that will perform a software reset on the ADC. Always returns 0. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_adef3b0ede34fa679c61089c027b4c1b0}\label{main_8cpp_adef3b0ede34fa679c61089c027b4c1b0} 
+uint8\+\_\+t {\bfseries write\+ADCRegister} (uint8\+\_\+t address, uint8\+\_\+t \mbox{\hyperlink{main_8cpp_aa99be7b8b4274b2256b394ea7bf80762}{data}}\mbox{[}$\,$\mbox{]}, uint8\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Function that first writes to the comm register, then writes data to the selected register. Always returns 0. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a4452c45c5f39ecd09c74622c6a8fab66}\label{main_8cpp_a4452c45c5f39ecd09c74622c6a8fab66} 
+uint8\+\_\+t {\bfseries read\+ADCRegister} (uint8\+\_\+t address, uint8\+\_\+t \mbox{\hyperlink{main_8cpp_aa99be7b8b4274b2256b394ea7bf80762}{data}}\mbox{[}$\,$\mbox{]}, uint8\+\_\+t size)
+\begin{DoxyCompactList}\small\item\em Function that first writes to the comm register, then reads data from the selected register. \end{DoxyCompactList}\item 
+\Hypertarget{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d}\label{main_8cpp_a4fc01d736fe50cf5b977f755b675f11d} 
+void {\bfseries setup} ()
+\item 
+\Hypertarget{main_8cpp_afe461d27b9c48d5921c00d521181f12f}\label{main_8cpp_afe461d27b9c48d5921c00d521181f12f} 
+void {\bfseries loop} ()
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8cpp_aa99be7b8b4274b2256b394ea7bf80762}\label{main_8cpp_aa99be7b8b4274b2256b394ea7bf80762} 
+uint8\+\_\+t {\bfseries data} \mbox{[}3\mbox{]} = \{0, 0, 0\}
+\begin{DoxyCompactList}\small\item\em Array that is passed to both the reading and writing functions. \end{DoxyCompactList}\end{DoxyCompactItemize}
