@@ -1,20 +1,19 @@
+/// \file
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
 
+ //! Slave select pin
 #define SS_PIN 10
-#define SPI_FREQ 100000
 
-// continously checks both 1 voltage channel or current channel
-// by changing VOLTAGE to 1, a Vin0 will be selected
-// by chanign VOLTAGE to 0, Iin0 will be selected
-#define VOLTAGE 1
+//! Defines the SPI frequency
+#define SPI_FREQ 100000 
+
+//! If 1, the ADC will sample Vin0. If 0, the ADC will sample Iin0.
+#define VOLTAGE 1 
 
 
-/*
-@brief
-Function that will perform a software reset on the ADC
-*/
+//! Function that will perform a software reset on the ADC. Always returns 0.
 uint8_t resetADC(){
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
   digitalWrite(SS_PIN, HIGH);
@@ -31,10 +30,7 @@ uint8_t resetADC(){
   return 0;
 }
 
-/*
-@brief
-Function that first writes to the comm register, then writes data to the selected register
-*/
+//! Function that first writes to the comm register, then writes data to the selected register. Always returns 0.
 uint8_t writeADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   // start SPI
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
@@ -54,10 +50,7 @@ uint8_t writeADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   return 0;
 }
 
-/*
-@brief
-Function that first writes to the comm register, then reads data from the selected register
-*/
+//! Function that first writes to the comm register, then reads data from the selected register. Always returns 0.
 uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   // start SPI
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
@@ -79,6 +72,7 @@ uint8_t readADCRegister(uint8_t address, uint8_t data[], uint8_t size){
   return 0;
 }
 
+//! Array that is passed to both the reading and writing functions
 uint8_t data[3] = {0, 0, 0}; //data buffer
 
 void setup() {
@@ -128,10 +122,6 @@ void setup() {
   readADCRegister(0x10, data, 2); 
   readADCRegister(0x20, data, 2); 
 }
-
-uint32_t conversionResult = 0;
-uint32_t calcVolt = 0;
-uint32_t calcCur = 0;
 
 void loop() {
   // start conversion
