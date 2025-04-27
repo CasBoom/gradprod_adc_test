@@ -10,14 +10,6 @@
 // by chanign VOLTAGE to 0, Iin0 will be selected
 #define VOLTAGE 1
 
-// ugly way to print the binary value of a byte
-void printBinary(uint8_t value)
-{
-    for (int i = 7; i >= 0; i-- )
-    {
-        Serial.print(value>>i & 0b00000001);
-    }
-}
 
 /*
 @brief
@@ -102,8 +94,7 @@ void setup() {
     set up ADC
   */
   readADCRegister(0x07, data, 1); 
-  // resetADC(); //reset device
-  // readADCRegister(0x07, data, 1); 
+ 
   // set ADCmode
   data[0] = 0b10000000; // enable refout
   data[1] = 0b00100000; // enable stand by mode
