@@ -13,7 +13,7 @@
 
 /*
 @brief
-Function that will do a software reset for the ADC
+Function that will perform a software reset on the ADC
 */
 uint8_t resetADC(){
   SPI.beginTransaction(SPISettings(SPI_FREQ, MSBFIRST, SPI_MODE3));
